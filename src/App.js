@@ -9,14 +9,16 @@ function App() {
 
   const [loading, setLoading] = useState(true)
   const [person, setPerson] = useState(null)
+  const [title, setTitle] = useState("name")
+  const [value, setValue] = useState("random person")
+
+  console.log(person);
 
   const fetchPerson = async () => {
 
     const res = await fetch(url)
     const data = await res.json()
-   // console.log(data);
     const person = data.results[0]
-    console.log(person);
 
     const {email, phone, dob:{age}, login:{password}, picture:{medium:image} } = person;
     const {location:{street:{number, name:streetName}}} = person
@@ -33,7 +35,15 @@ function App() {
     fetchPerson()
   }, [])
   
-  console.log(person);
+  const handleValue = (e) => {
+    console.log(e.target)
+    if(e.target.classList.contains("icon")){
+      const newValue= e.target.dataset.label
+      console.log(newValue);
+      setTitle(newValue)
+      setValue(person[newValue])
+    }
+  }
 
   if(loading) return <h2>Loading ...</h2>
 
@@ -44,26 +54,45 @@ function App() {
 
         <div className="container">
           <img src={(person && person.image) || defaultImage} alt="user img" />
-          <p className="user-title">my name is</p>
-          <p className="user-value">{person.name}</p>
+
+          <p className="user-title">my {title} is</p>
+          <p className="user-value">{value}</p>
 
           <div className="values-list">
-            <button className="icon">
+            <button className="icon"
+                    onMouseOver={handleValue}
+                    data-label="name"
+            >
               <FaUser/>
             </button>
-            <button className='icon' >                   
+            <button className='icon'
+                     onMouseOver={handleValue}
+                     data-label="email"
+            >                   
                 <FaEnvelopeOpen/>
             </button>
-            <button className='icon' >               
+            <button className='icon' 
+                     onMouseOver={handleValue}
+                     data-label="age"
+            >               
                 <FaCalendarTimes/>
             </button>
-            <button className='icon'>      
+            <button className='icon'
+                     onMouseOver={handleValue}
+                     data-label="adress"
+            >      
                 <FaMap/>
             </button>
-            <button className='icon'> 
+            <button className='icon'
+                     onMouseOver={handleValue}
+                     data-label="phone"
+            > 
                 <FaPhone/>
             </button>
-            <button className='icon'  >     
+            <button className='icon'
+                     onMouseOver={handleValue}
+                     data-label="password"
+            >     
                 <FaLock/>
             </button>
           </div>
